@@ -1,13 +1,51 @@
-import { Link, Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, Navigate, Outlet } from "react-router-dom";
 
 export default function Layout() {
+    const [username, setUsername] = useState(null)
+    const [redirect, setRedirect] = useState(false)
+
+    
+    async function verifyUser() {
+        await fetch('http://localhost:4400/profile', {
+            method: 'GET',
+            credentials: 'include'
+        }).then(response => {
+            response.json().then(userInfo => {
+                setUsername(userInfo.username)
+            })
+        })
+    }
+    
+    useEffect(() => {
+        verifyUser();
+    }, [username])
+    
+    async function logout() {
+        await fetch('http://localhost:4400/logout', {
+            method: 'POST',
+            credentials: 'include',
+        }).then(response => {
+            response.json().then(status => {
+                if (status == 'ok') {
+                    setRedirect(true)
+                }
+            })
+        })
+    }
     return (
         <header>
             <nav className="flex justify-between py-4 mb-9">
                 <h1 className="text-white font-semibold text-2xl"><Link to="/">BLoGG</Link></h1>
                 <ul className="text-slate-500 flex h-full items-center gap-10 pr-2">
-                    <li className="hover:text-slate-200 transition"><Link to="/signup">Signup</Link></li>
-                    <li className="hover:text-slate-200 transition"><Link to="/login">Login</Link></li>
+                    <li className="hover:text-slate-200 transition">
+                        {username && (<Link to="/post">Create Post</Link>)}
+                        {!username && (<Link to="/signup">Signup</Link>)}
+                    </li>
+                    <li className="hover:text-slate-200 transition">
+                        {username && (<Link to="/login" onClick={logout} className="cursor-pointer">Logout</Link>)}
+                        {!username && (<Link to="/login">Login</Link>)}   
+                    </li>
                 </ul>
             </nav>
             <Outlet/>

@@ -10,13 +10,27 @@ export default function Register() {
         setData(values => ({...values, [name]: value}))
     }
 
-    function handleSubmission(e) {
-        e.preventDefault();
-        console.log(data);
-    }
+    async function handleSubmission(e) {
+      e.preventDefault();
+      const { fullname, username, password } = data;
+      if (Object.keys(data).length !=0 && username != "" && password != "" && fullname != "") {
+        const response = await fetch('http://localhost:4400/api/signup', {
+        method: 'POST',
+        body: JSON.stringify({fullname, username, password}),
+        headers: {'Content-Type':'application/json'}
+        })
+        if (response.ok) {
+          alert("Registration successful.")
+        } else {
+          alert("Registration Failed.")
+        }
+      } else {
+        alert('Empty!')
+      }
+  }
 
     return (
-    <div className=" shadow-md border mx-auto w-fit mt-12 rounded-md p-3 border-slate-800">
+    <div className=" shadow-md border mx-auto w-fit mt-12 rounded-md p-3 py-11 border-slate-800">
       <form onSubmit={handleSubmission}>
         <h1 className=" mb-6 text-4xl font-semibold text-white text-center">Signup</h1>
         <input 

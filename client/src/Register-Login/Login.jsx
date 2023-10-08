@@ -1,8 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
     const [user, setUser] = useState({})
+    const [redirect, setRedirect] = useState(false)
+    const navigate = useNavigate();
 
+    if (redirect) {navigate('/')}
 
     function handleChange(e) {
         const value = e.target.value;
@@ -12,17 +16,24 @@ export default function Login() {
 
     async function handleSubmission(e) {
         e.preventDefault();
-        console.log(user)
         const { username, password } = user;
-        await fetch('http://localhost:4000/api/login', {
-          method: 'POST',
-          body: JSON.stringify({username, password}),
-          headers: {'Content-Type':'application/json'}
-        })
+        if (Object.keys(user).length !==0 && username !== "" && password !== "") {
+            const response = await fetch('http://localhost:4400/api/login', {
+            method: 'POST',
+            body: JSON.stringify({username, password}),
+            headers: {'Content-Type':'application/json'},
+            credentials: 'include'
+            })
+            if (response.ok) {
+                setRedirect(true)
+            } else {alert('Login Failed!')}
+        } else {
+            alert('Empty!')
+        }
     }
 
     return (
-    <div className=" shadow-md border mx-auto w-fit mt-12 rounded-md p-3 border-slate-800">
+    <div className=" shadow-md border mx-auto w-fit mt-12 rounded-md p-3 py-11 border-slate-800">
       <form onSubmit={handleSubmission}>
         <h1 className=" mb-6 text-4xl font-semibold text-white text-center">Login</h1>
         <input 
