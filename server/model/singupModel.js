@@ -8,7 +8,7 @@ const UserSchema = new Schema({
         required: true
     },
     username: { 
-        type: String, 
+        type: String,
         required: true,
         unique: true
     },
@@ -17,8 +17,14 @@ const UserSchema = new Schema({
         required: true 
     },
     date: {
-        type: Date
+        type: Date,
+        default: () => {
+            let date = new Date();
+            date.setMinutes(date.getMinutes() + 330);
+            return date;
+        }
+    },            
     }
-})
+)
 
 module.exports = new mongoose.model('Login', UserSchema);

@@ -1,25 +1,29 @@
-import { useEffect, useState } from "react";
-import { Link, Navigate, Outlet } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { Link, Outlet } from "react-router-dom";
+import { UserContext } from "../UserContext";
 
 export default function Layout() {
-    const [username, setUsername] = useState(null)
-    const [redirect, setRedirect] = useState(false)
-
+    const { userInfo, setUserInfo, userLogged, setUserLogged } = useContext(UserContext)
+    let username = userInfo?.username;
     
     async function verifyUser() {
-        await fetch('http://localhost:4400/profile', {
-            method: 'GET',
-            credentials: 'include'
-        }).then(response => {
-            response.json().then(userInfo => {
-                setUsername(userInfo.username)
+        try {
+            await fetch('http://localhost:4400/profile', {
+                method: 'GET',
+                credentials: 'include'
+            }).then(response => {
+                response.json().then(userinfo => {
+                    setUserInfo(userinfo)
+                })
             })
-        })
+        } catch (err) {
+            console.error(err)
+        }
     }
     
     useEffect(() => {
         verifyUser();
-    }, [username])
+    }, [userLogged])
     
     async function logout() {
         await fetch('http://localhost:4400/logout', {
@@ -27,12 +31,15 @@ export default function Layout() {
             credentials: 'include',
         }).then(response => {
             response.json().then(status => {
-                if (status == 'ok') {
-                    setRedirect(true)
+                if (status === 'ok') {
+                    // setRedirect(true)
                 }
             })
         })
+        setUserInfo(null)
+        setUserLogged(false)
     }
+
     return (
         <header>
             <nav className="flex justify-between py-4 mb-9">

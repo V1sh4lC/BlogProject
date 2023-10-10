@@ -13,7 +13,7 @@ export default function Register() {
     async function handleSubmission(e) {
       e.preventDefault();
       const { fullname, username, password } = data;
-      if (Object.keys(data).length !=0 && username != "" && password != "" && fullname != "") {
+      if (Object.keys(data).length !==0 && username !== "" && password !== "" && fullname !== "") {
         const response = await fetch('http://localhost:4400/api/signup', {
         method: 'POST',
         body: JSON.stringify({fullname, username, password}),

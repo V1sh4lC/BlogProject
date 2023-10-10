@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from "../UserContext";
 
 export default function Login() {
     const [user, setUser] = useState({})
     const [redirect, setRedirect] = useState(false)
+    const { setUserLogged } = useContext(UserContext)
+
     const navigate = useNavigate();
 
     if (redirect) {navigate('/')}
@@ -26,6 +29,7 @@ export default function Login() {
             })
             if (response.ok) {
                 setRedirect(true)
+                setUserLogged(true)
             } else {alert('Login Failed!')}
         } else {
             alert('Empty!')

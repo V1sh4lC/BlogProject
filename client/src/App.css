@@ -15,3 +15,7 @@ body {
     margin-right: 196px;
   }
 }
+
+.postInputs {
+  @apply w-full mb-2 py-1 pl-2 outline-none rounded-sm bg-slate-800 text-white;
+}
