@@ -8,7 +8,7 @@ export default function Layout() {
     
     async function verifyUser() {
         try {
-            await fetch('http://localhost:4400/profile', {
+            await fetch('http://192.168.0.104:4400/profile', {
                 method: 'GET',
                 credentials: 'include'
             }).then(response => {
@@ -26,7 +26,7 @@ export default function Layout() {
     }, [userLogged])
     
     async function logout() {
-        await fetch('http://localhost:4400/logout', {
+        await fetch('http://192.168.0.104:4400/logout', {
             method: 'POST',
             credentials: 'include',
         }).then(response => {

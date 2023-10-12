@@ -12,9 +12,10 @@ const multer = require('multer')
 const upload = multer({dest: './uploads'})
 const fs = require('fs');
 
-app.use(cors({credentials:true, origin:"http://localhost:3000"}))
+app.use(cors({credentials:true, origin:"http://192.168.0.104:3000"}))
 app.use(express.json())
 app.use(cookies())
+app.use('/uploads', express.static(__dirname + "/.." + "/uploads"))
 
 async function dbConn() {
     await mongoose.connect(process.env.URI)
@@ -90,7 +91,7 @@ app.post('/api/post', upload.single('file') ,async (req, res) => {
                 author: req.body.author
             })
             
-            res.json('ok')
+            res.json({postCreationStatus: 'ok'})
             console.log(postCreated)
         } catch (err) {
             res.status(500).json(err)
@@ -101,4 +102,32 @@ app.post('/api/post', upload.single('file') ,async (req, res) => {
     }
 })
 
-app.listen(process.env.PORT)
+app.get('/api/posts', async (req, res) => {
+    const info = await CreatePost.find(
+        {},
+        ['author','datePublished', 'title', 'imagePath', 'imageName', 'description'],
+        ).sort({datePublished: -1})
+        .limit(20);
+    res.json(info)
+})
+
+app.get('/article/:id', async (req, res) => {
+    const { id } = req.params;
+    const postDoc = await CreatePost.findById(id)
+    res.json(postDoc)
+})
+
+// app.post('/api', async (req, res) => {
+//     const { id } = req.body;
+//     const info = await CreatePost.findByID(id);
+//     res.json(info)
+// })
+
+app.get('/hello', (req, res) => {
+    res.send('Hey Hello back. : )')
+})
+
+
+app.listen(process.env.PORT, '192.168.0.104', () => {
+    console.log(`server hosted on http://192.168.0.104:${process.env.PORT}`)
+})

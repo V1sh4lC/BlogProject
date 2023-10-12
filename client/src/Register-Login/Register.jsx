@@ -14,7 +14,7 @@ export default function Register() {
       e.preventDefault();
       const { fullname, username, password } = data;
       if (Object.keys(data).length !==0 && username !== "" && password !== "" && fullname !== "") {
-        const response = await fetch('http://localhost:4400/api/signup', {
+        const response = await fetch('http://192.168.0.104:4400/api/signup', {
         method: 'POST',
         body: JSON.stringify({fullname, username, password}),
         headers: {'Content-Type':'application/json'}

@@ -21,7 +21,7 @@ export default function Login() {
         e.preventDefault();
         const { username, password } = user;
         if (Object.keys(user).length !==0 && username !== "" && password !== "") {
-            const response = await fetch('http://localhost:4400/api/login', {
+            const response = await fetch('http://192.168.0.104:4400/api/login', {
             method: 'POST',
             body: JSON.stringify({username, password}),
             headers: {'Content-Type':'application/json'},

@@ -8,14 +8,51 @@ body {
   margin-right: 12px;
 }
 
+#description {
+  @apply text-ellipsis overflow-hidden text-xs text-gray-500;
+}
+
 @media screen and (min-width: 920px) {
   body {
     background-color: #12151c;
     margin-left: 196px;
     margin-right: 196px;
   }
+
+  #description {
+    @apply text-ellipsis overflow-hidden text-sm text-gray-600;
+  }
+}
+
+@media only screen and (max-width: 530px) {
+  #main{
+    display: block;
+    height: fit-content;
+  }
+
+  #image-container {
+    /* border: 1px solid white; */
+    width: 100%;
+    margin-bottom: 24px;
+  }
+
+  #description {
+    @apply mb-3; 
+  }
+
+  #content-container {
+    @apply w-full;
+  }
 }
 
 .postInputs {
   @apply w-full mb-2 py-1 pl-2 outline-none rounded-sm bg-slate-800 text-white;
+}
+
+.ql-size-huge {
+  @apply text-3xl font-semibold;
+}
+
+.ql-size-large {
+  @apply text-3xl font-semibold;
 }

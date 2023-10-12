@@ -3,6 +3,7 @@ import 'react-quill/dist/quill.snow.css'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.core.css'
 import { useContext, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { UserContext } from '../UserContext'
 
 export default function CreatePost() {
@@ -10,6 +11,10 @@ export default function CreatePost() {
     const [imageFile, setImageFile] = useState('')
     const [content, setContent] = useState('')
     const { userInfo } = useContext(UserContext)
+    const [redirect, setRedirect] = useState(false)
+
+    const navigate = useNavigate();
+    if (redirect) {navigate('/')}
 
     const modules = {
         toolbar: [
@@ -39,13 +44,15 @@ export default function CreatePost() {
             data.set('content', content);
             data.set('author', userInfo?.username);
 
-            await fetch('http://localhost:4400/api/post', {
+            await fetch('http://192.168.0.104:4400/api/post', {
                 method: 'POST',
                 body: data,
                 credentials: 'include'
             }).then(response => {
                 response.json().then(info => {
-                    console.log(info)
+                    if (info.postCreationStatus === 'ok') {
+                        setRedirect(true)
+                    }
                 })
             })
         }        

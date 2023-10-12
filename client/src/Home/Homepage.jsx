@@ -1,45 +1,58 @@
+import { useEffect, useState } from 'react'
+import * as dayjs from 'dayjs'
+import { Link, Outlet } from 'react-router-dom'
+import Footer from "./Footer"
+
 function ItemCard({ data }) {
+
+    const date = dayjs(data.datePublished).format('MMM D, YYYY')
+    // const image = '.' + "" + data.imagePath + data.imageName;
+    // console.log(image)
+
     return (
             <div className="mb-3 cursor-pointer rounded-md shadow-sm gap-3 p-3 border border-slate-800 flex h-60" id="main">
-                <div className="overflow-hidden rounded-md w-1/4 h-full" id="image-container">
-                    <img className="h-full w-full object-cover" src={data.src} alt="osama bin laden image" />
-                </div>
-                <div className="text-slate-300 w-3/4">
-                    <h3 className="font-semibold text-2xl mb-3">{data.title}</h3>
-                    <p className="">{data.description}</p>
-                    <span className="text-xs font-semibold mr-2">{data.author}</span>
-                    <span className="text-xs font-semibold">&bull; {data.date}</span>
-                </div>
+                    <div className="overflow-hidden rounded-md w-1/4 h-full" id="image-container">
+                        <Link to={`article/${data._id}`}>
+                            <img id='cardImage' className="h-full w-full object-cover" src={'http://192.168.0.104:4400/uploads/' + data.imageName} alt="osama bin laden image" />
+                        </Link> 
+                    </div>
+                    <div className="text-slate-300 w-3/4" id="content-container">
+                        <Link to={`article/${data._id}`}>
+                        <h3 className="font-semibold text-2xl mb-3">{data.title}</h3>
+                        </Link>
+                        <p id='description'>{data.description}</p>
+                        <span className="text-xs font-semibold mr-2 uppercase">{data.author}</span>
+                        <span className="text-xs font-semibold">&bull; {date}</span>
+                    </div>
             </div>
     )
 }
 
 export default function Homepage() {
-
-    const dataSet = [{
-        src: "https://pbs.twimg.com/media/BPPlg6PCYAAwpHH.jpg",
-        title: "Osama Bin Lantern",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit Lorem ipsum dolor sit amet consectetur adipisicing elit  adipisicing elit Lorem ipsum dolor sit amet conse  adipisicing elit Lorem ipsum dolor sit amet conse  adipisicing elit Lorem ipsum dolor sit amet conse...",
-        author: "Author Name",
-        date: '7 Oct, 2023'
-    },{
-        src: "https://pbs.twimg.com/media/BPPlg6PCYAAwpHH.jpg",
-        title: "Osama Bin Lantern",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
-        author: "Author Name",
-        date: '7 Oct, 2023'
-    },{
-        src: "https://pbs.twimg.com/media/BPPlg6PCYAAwpHH.jpg",
-        title: "Osama Bin Lantern",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
-        author: "Author Name",
-        date: '7 Oct, 2023'
-    }]
-
+    const [posts, setPosts] = useState([])
+    async function getPosts() {
+        await fetch('http://192.168.0.104:4400/api/posts', {
+            method: 'GET'
+        }).then(response => {
+            response.json().then(info => {
+                setPosts(info)
+            })
+        })
+    }
+    // title, description, imagePath, imageName, content, author, datePublished.
+    useEffect(() => {
+        getPosts()
+    },[])
 
     return (
-        <section>
-            {dataSet.map((data) => <ItemCard data={data}/>)}
-        </section>
+        <>
+            <section>
+                {posts.map(data => <ItemCard data={data} />)}
+            </section>
+            <footer>
+                <Footer />
+            </footer>
+        </>
     )
+    
 }

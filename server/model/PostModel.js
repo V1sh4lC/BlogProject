@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose;
 
 const PostSchema = Schema({
-    // title, description, file, content 
+    // title, description, imagePath, imageName, content, author, datePublished. 
     title: {
         type: String,
         required: true,
