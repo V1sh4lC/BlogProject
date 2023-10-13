@@ -24,8 +24,8 @@ const PostSchema = Schema({
         required: true,
     },
     author: {
-        type: String,
-        required: true,
+        type: Schema.Types.ObjectId,
+        ref: 'Login',
     },
     datePublished: {
         type: Date,

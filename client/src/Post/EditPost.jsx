@@ -1,12 +1,10 @@
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
-import 'react-quill/dist/quill.bubble.css'
-import 'react-quill/dist/quill.core.css'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { UserContext } from '../UserContext'
 
-export default function CreatePost() {
+export default function EditPost() {
     const [cardInfo, setCardInfo] = useState({})
     const [imageFile, setImageFile] = useState('')
     const [content, setContent] = useState('')
@@ -15,6 +13,25 @@ export default function CreatePost() {
 
     const navigate = useNavigate();
     if (redirect) {navigate('/')}
+
+    async function editPost() {
+        const path = window.location.pathname;
+        const id = path.split('/')[2]
+        await fetch(`http://192.168.0.104:4400/article/${id}`, {
+            method: 'GET',
+            credentials: 'include'
+        }).then(response => {
+            response.json().then(data => {
+                setCardInfo(values => ({...values, ['title']: data.title}))
+                setCardInfo(values => ({...values, ['description']: data.description}))
+                setContent(data.content)
+            })
+        })
+    }
+
+    useEffect(() => {
+        editPost();
+    }, [])
 
     const modules = {
         toolbar: [
@@ -45,7 +62,7 @@ export default function CreatePost() {
             // data.set('author', userInfo?.username);
 
             await fetch('http://192.168.0.104:4400/api/post', {
-                method: 'POST',
+                method: 'PUT',
                 body: data,
                 credentials: 'include'
             }).then(response => {
@@ -111,7 +128,8 @@ export default function CreatePost() {
                 className='w-full mt-2 bg-slate-700 text-white rounded-sm py-2 hover:bg-slate-600'
                 type="submit" 
                 value="Post"
-            />              
+            />    
+            <p className='text-gray-600 text-xs mt-3'>Keep image button unhindered if you don't want to update article cover*</p>          
         </form>
     )
 }

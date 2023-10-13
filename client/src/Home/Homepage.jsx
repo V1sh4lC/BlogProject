@@ -21,7 +21,7 @@ function ItemCard({ data }) {
                         <h3 className="font-semibold text-2xl mb-3">{data.title}</h3>
                         </Link>
                         <p id='description'>{data.description}</p>
-                        <span className="text-xs font-semibold mr-2 uppercase">{data.author}</span>
+                        <span className="text-xs font-semibold mr-2 uppercase">{data.author.username}</span>
                         <span className="text-xs font-semibold">&bull; {date}</span>
                     </div>
             </div>

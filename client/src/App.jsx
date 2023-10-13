@@ -7,6 +7,7 @@ import Homepage from './Home/Homepage'
 import { UserContextProvider } from './UserContext'
 import CreatePost from './Post/CreatePost';
 import Article from './Post/PostPage';
+import EditPost from './Post/EditPost';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="signup" element={<Signup />}/>
             <Route path="post" element={<CreatePost />}/>
             <Route path="article/:id" element={<Article />} />
+            <Route path="edit/:id" element={<EditPost />} />
           </Route>
         </Routes>
       </BrowserRouter>

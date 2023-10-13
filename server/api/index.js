@@ -76,23 +76,26 @@ app.post('/logout', (req, res) => {
 
 app.post('/api/post', upload.single('file') ,async (req, res) => {
     try {
+        const token = req.cookies.token;
         const reqImage = req.file;
         const { originalname, path } = reqImage;
         const ext = originalname.split('.')[1]
         fs.renameSync(path, path + '.' + ext);
         //posting to the db
         try {
-            const postCreated = await CreatePost.create({
-                title: req.body.title,
-                description: req.body.description,
-                imagePath: reqImage.destination,
-                imageName: reqImage.filename + "." + ext,
-                content: req.body.content,
-                author: req.body.author
+            jwt.verify(token, process.env.TOKEN_SECRET, async (err, user) => {
+                const postCreated = await CreatePost.create({
+                    title: req.body.title,
+                    description: req.body.description,
+                    imagePath: reqImage.destination,
+                    imageName: reqImage.filename + "." + ext,
+                    content: req.body.content,
+                    author: user.id
+                })
+                
+                res.json({postCreationStatus: 'ok'})
+
             })
-            
-            res.json({postCreationStatus: 'ok'})
-            console.log(postCreated)
         } catch (err) {
             res.status(500).json(err)
         }
@@ -104,16 +107,16 @@ app.post('/api/post', upload.single('file') ,async (req, res) => {
 
 app.get('/api/posts', async (req, res) => {
     const info = await CreatePost.find(
-        {},
-        ['author','datePublished', 'title', 'imagePath', 'imageName', 'description'],
-        ).sort({datePublished: -1})
+        {}).populate('author', ['username'])
+        .sort({datePublished: -1})
         .limit(20);
+    
     res.json(info)
 })
 
 app.get('/article/:id', async (req, res) => {
     const { id } = req.params;
-    const postDoc = await CreatePost.findById(id)
+    const postDoc = await CreatePost.findById(id).populate('author', ['username'])
     res.json(postDoc)
 })
 
@@ -122,10 +125,6 @@ app.get('/article/:id', async (req, res) => {
 //     const info = await CreatePost.findByID(id);
 //     res.json(info)
 // })
-
-app.get('/hello', (req, res) => {
-    res.send('Hey Hello back. : )')
-})
 
 
 app.listen(process.env.PORT, '192.168.0.104', () => {

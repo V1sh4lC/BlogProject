@@ -41,6 +41,7 @@ export default function Layout() {
     }
 
     return (
+        <>
         <header>
             <nav className="flex justify-between py-4 mb-9">
                 <h1 className="text-white font-semibold text-2xl"><Link to="/">BLoGG</Link></h1>
@@ -55,7 +56,8 @@ export default function Layout() {
                     </li>
                 </ul>
             </nav>
-            <Outlet/>
         </header>
+        <Outlet/>
+        </>
     )
 }
