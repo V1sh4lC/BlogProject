@@ -12,9 +12,9 @@ export default function EditPost() {
     const [redirect, setRedirect] = useState(false)
 
     const navigate = useNavigate();
-    if (redirect) {navigate('/')}
+    // if (redirect) {navigate('/')}
 
-    async function editPost() {
+    async function getEditPost() {
         const path = window.location.pathname;
         const id = path.split('/')[2]
         await fetch(`http://192.168.0.104:4400/article/${id}`, {
@@ -30,7 +30,7 @@ export default function EditPost() {
     }
 
     useEffect(() => {
-        editPost();
+        getEditPost();
     }, [])
 
     const modules = {
@@ -51,14 +51,17 @@ export default function EditPost() {
 
     async function handleSubmission(ev) {
         ev.preventDefault();
-        if (cardInfo?.title === null || cardInfo?.description === null || imageFile === '' || content === '') {
+        if (cardInfo?.title === null || cardInfo?.description === null || content === '') {
             alert("Invalid Post!")
         } else {
+            const path = window.location.pathname;
+            const id = path.split('/')[2]
             const data = new FormData();
             data.set('title', cardInfo.title);
             data.set('description', cardInfo.description);
-            data.set('file', imageFile[0]);
+            data.set('file', imageFile?.[0])
             data.set('content', content);
+            data.set('_id', id);
             // data.set('author', userInfo?.username);
 
             await fetch('http://192.168.0.104:4400/api/post', {
@@ -67,8 +70,9 @@ export default function EditPost() {
                 credentials: 'include'
             }).then(response => {
                 response.json().then(info => {
-                    if (info.postCreationStatus === 'ok') {
-                        setRedirect(true)
+                    if (info.postUpdateStatus === 'ok') {
+                        // setRedirect(true)
+                       navigate('/')
                     }
                 })
             })

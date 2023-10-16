@@ -28,7 +28,7 @@ function Post({ data, author, isAuthor }) {
         <div className="main mb-20">
             <div className=" w-full flex justify-center mb-24">
                 <img src={`http://192.168.0.104:4400/uploads/`+data.imageName} alt="main image"
-                    className="w-1/2 sm:w-full" 
+                    className="w-1/2 sm:w-full" loading="lazy"
                 />
             </div>
             {isAuthor && <EditButton />}

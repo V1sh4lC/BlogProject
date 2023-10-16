@@ -13,7 +13,7 @@ function ItemCard({ data }) {
             <div className="mb-3 cursor-pointer rounded-md shadow-sm gap-3 p-3 border border-slate-800 flex h-60" id="main">
                     <div className="overflow-hidden rounded-md w-1/4 h-full" id="image-container">
                         <Link to={`article/${data._id}`}>
-                            <img id='cardImage' className="h-full w-full object-cover" src={'http://192.168.0.104:4400/uploads/' + data.imageName} alt="osama bin laden image" />
+                            <img id='cardImage' className="h-full w-full object-cover" src={'http://192.168.0.104:4400/uploads/' + data.imageName} alt="osama bin laden image" loading='lazy'/>
                         </Link> 
                     </div>
                     <div className="text-slate-300 w-3/4" id="content-container">

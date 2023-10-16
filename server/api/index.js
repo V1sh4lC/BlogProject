@@ -74,7 +74,7 @@ app.post('/logout', (req, res) => {
     res.cookie('token', '').json('ok')
 })
 
-app.post('/api/post', upload.single('file') ,async (req, res) => {
+app.post('/api/post', upload.single('file') ,async (req, res, next) => {
     try {
         const token = req.cookies.token;
         const reqImage = req.file;
@@ -119,6 +119,43 @@ app.get('/article/:id', async (req, res) => {
     const postDoc = await CreatePost.findById(id).populate('author', ['username'])
     res.json(postDoc)
 })
+
+app.put('/api/post', upload.single('file') , (req, res, next) => {
+    const newDoc = {
+        title: req.body.title,
+        description: req.body.description,
+        content: req.body.content
+    }
+
+    if (req?.file) {
+        const reqImage = req.file;
+        const { originalname, path } = reqImage;
+        const ext = originalname.split('.')[1];
+        fs.renameSync(path, path + '.' + ext)
+        newDoc.imageName = reqImage.filename + '.' + ext
+    }
+
+    const options = {
+        returnDocument:'after',
+    }
+
+    try {
+        const token = req.cookies.token;
+        jwt.verify(token, process.env.TOKEN_SECRET, async (err, user) => {
+            if (err) {
+                res.json(err)
+            } else {
+                const doc = await CreatePost.findOneAndUpdate({_id: req.body._id}, newDoc, options)
+                res.json({postUpdateStatus: 'ok'})
+            }
+            
+        })
+    } catch (err) {
+        res.json({error: err})
+    }
+    // res.json({postUpdateStatus: "ok"})
+    
+}) 
 
 // app.post('/api', async (req, res) => {
 //     const { id } = req.body;
